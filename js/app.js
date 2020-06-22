@@ -65,24 +65,25 @@ formulario.addEventListener("submit", function (e) {
 
     //Crear instancia de Interfaz()
     const interfaz = new Interfaz();
+    //Si se encuentran resultados anteriores se eliminan del DOM
+    if (document.querySelector('#resultado div') != null) {
+        document.querySelector('#resultado div').remove();
+    }
     if (marcaSeleccionada === '' || anioSeleccionado === '' || tipo === '') {
-        interfaz.mostararError('Faltan datos, revise por favor e ingrese la información requerida', 'error')
+        interfaz.mostrarMensajes('Faltan datos, revise por favor e ingrese la información requerida', 'error')
     } else {
-        //Si se encuentran resultados anteriores se eliminan del DOM
-        if (document.querySelector('#resultado div') != null) {
-            document.querySelector('#resultado div').remove();
-        }
 
         const seguro = new Seguro(marcaSeleccionada, anioSeleccionado, tipo); //Instanciar seguro
         const valorSeguroTotal = seguro.cotizarSeguro();
         interfaz.mostrarResultado(seguro, valorSeguroTotal);
+        interfaz.mostrarMensajes('Cotizando', 'correcto')
     }
 
 });
 
 function Interfaz() { }
 
-Interfaz.prototype.mostararError = function (mensaje, tipo) {
+Interfaz.prototype.mostrarMensajes = function (mensaje, tipo) {
     const div = document.createElement('div');
     if (tipo === 'error') {
         div.classList.add('mensaje', 'error');
@@ -90,10 +91,10 @@ Interfaz.prototype.mostararError = function (mensaje, tipo) {
         div.classList.add('mensaje', 'correcto');
     }
     div.innerHTML = `${mensaje}`;
-    formulario.insertBefore(div, document.querySelector('.from-group'));
+    formulario.insertBefore(div, document.querySelector('#cargando'));
     setTimeout(() => {
         document.querySelector('.mensaje').remove();
-    }, 5000);
+    }, 4000);
 }
 
 Interfaz.prototype.mostrarResultado = function (seguro, total) {
@@ -112,11 +113,19 @@ Interfaz.prototype.mostrarResultado = function (seguro, total) {
 
     const div = document.createElement('div');
     div.innerHTML = `
-        <p>RESUMEN</p>
+        <p class='header'>RESUMEN</p>
         <p>Marca: ${marca}</p>
         <p>Año: ${seguro.anio}</p>
         <p>Tipo: ${seguro.tipoSeguro}</p>
         <p>Total: $ ${total}</p>
     `;
-    document.getElementById('resultado').appendChild(div);
+
+    const spinner = document.querySelector('#cargando img');
+    spinner.style.display = 'block';
+    document.querySelector('button').style.display = 'none';//Ocultar botón cotizar mientras se "procesan" los datos
+    setTimeout(() => {
+        spinner.style.display = 'none';
+        document.getElementById('resultado').appendChild(div);//Muestra resumen en el DOM
+        document.querySelector('button').style.display = 'block';
+    }, 4000);
 }
