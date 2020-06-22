@@ -35,23 +35,24 @@ Seguro.prototype.cotizarSeguro = function () {
             valorSeguro = base * 1.35;
             break;
     }
+    console.log(valorSeguro)
 
     const anioDiferencia = new Date().getFullYear() - this.anio;
     //Cada año de diferencia reduce un 3%
-    valorSeguro -= ((anioDiferencia * 3) * valorSeguro) / 100;
+    valorSeguro -= (anioDiferencia * 3 * valorSeguro) / 100;
 
     /**
      * Si el seguro es básico se multiplica por 30% más
      * Si el seguro es completo se multiplica 50%
      */
-    if (this.tipo === 'basico') {
+    if (this.tipoSeguro === "basico") {
         valorSeguro *= 1.30;
     } else {
         valorSeguro *= 1.50;
     }
     console.log(valorSeguro)
-    return valorSeguro;
-
+    /* return valorSeguro;
+ */
 }
 
 //Se obtienen los datos del formulario
