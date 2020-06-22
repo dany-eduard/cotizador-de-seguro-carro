@@ -45,11 +45,13 @@ Seguro.prototype.cotizarSeguro = function () {
      * Si el seguro es completo se multiplica 50%
      */
     if (this.tipo === 'basico') {
-        cantidad *= 1.30;
+        valorSeguro *= 1.30;
     } else {
-        cantidad *= 1.50;
+        valorSeguro *= 1.50;
     }
-    return cantidad;
+    console.log(valorSeguro)
+    return valorSeguro;
+
 }
 
 //Se obtienen los datos del formulario
