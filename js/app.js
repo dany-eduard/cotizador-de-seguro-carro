@@ -51,8 +51,8 @@ Seguro.prototype.cotizarSeguro = function () {
         valorSeguro *= 1.50;
     }
     console.log(valorSeguro)
-    /* return valorSeguro;
- */
+    return valorSeguro;
+
 }
 
 //Se obtienen los datos del formulario
@@ -68,9 +68,14 @@ formulario.addEventListener("submit", function (e) {
     if (marcaSeleccionada === '' || anioSeleccionado === '' || tipo === '') {
         interfaz.mostararError('Faltan datos, revise por favor e ingrese la información requerida', 'error')
     } else {
-        const seguro = new Seguro(marcaSeleccionada, anioSeleccionado, tipo); //Instanciar seguro
-        const cantidad = seguro.cotizarSeguro();
+        //Si se encuentran resultados anteriores se eliminan del DOM
+        if (document.querySelector('#resultado div') != null) {
+            document.querySelector('#resultado div').remove();
+        }
 
+        const seguro = new Seguro(marcaSeleccionada, anioSeleccionado, tipo); //Instanciar seguro
+        const valorSeguroTotal = seguro.cotizarSeguro();
+        interfaz.mostrarResultado(seguro, valorSeguroTotal);
     }
 
 });
@@ -89,4 +94,29 @@ Interfaz.prototype.mostararError = function (mensaje, tipo) {
     setTimeout(() => {
         document.querySelector('.mensaje').remove();
     }, 5000);
+}
+
+Interfaz.prototype.mostrarResultado = function (seguro, total) {
+    let marca;
+    switch (seguro.marca) {
+        case '1':
+            marca = "Americano";
+            break;
+        case '2':
+            marca = "Asiático";
+            break;
+        case '3':
+            marca = "Europeo";
+            break;
+    }
+
+    const div = document.createElement('div');
+    div.innerHTML = `
+        <p>RESUMEN</p>
+        <p>Marca: ${marca}</p>
+        <p>Año: ${seguro.anio}</p>
+        <p>Tipo: ${seguro.tipoSeguro}</p>
+        <p>Total: $ ${total}</p>
+    `;
+    document.getElementById('resultado').appendChild(div);
 }
