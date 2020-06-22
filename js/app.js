@@ -11,48 +11,50 @@ for (let i = anioMax; i > anioMin; i--) {
 }
 
 //Constructor Seguro, recolecta los datos del formulario
-function Seguro(marca, anio, tipoSeguro) {
-    this.marca = marca;
-    this.anio = anio;
-    this.tipoSeguro = tipoSeguro;
-}
-Seguro.prototype.cotizarSeguro = function () {
-    /*
-        1 = Americano - 1.15
-        2 = Asiático - 1.05
-        3 = Europeo - 1.35
-    */
-    let valorSeguro;
-    const base = 2000; //Precio inicial 
-    switch (this.marca) {
-        case '1':
-            valorSeguro = base * 1.15;
-            break;
-        case '2':
-            valorSeguro = base * 1.05;
-            break;
-        case '3':
-            valorSeguro = base * 1.35;
-            break;
+class Seguro {
+    constructor(marca, anio, tipoSeguro) {
+        this.marca = marca;
+        this.anio = anio;
+        this.tipoSeguro = tipoSeguro;
     }
-    console.log(valorSeguro)
 
-    const anioDiferencia = new Date().getFullYear() - this.anio;
-    //Cada año de diferencia reduce un 3%
-    valorSeguro -= (anioDiferencia * 3 * valorSeguro) / 100;
+    cotizarSeguro() {
+        /*
+            1 = Americano - 1.15
+            2 = Asiático - 1.05
+            3 = Europeo - 1.35
+        */
+        let valorSeguro;
+        const base = 2000; //Precio inicial 
+        switch (this.marca) {
+            case '1':
+                valorSeguro = base * 1.15;
+                break;
+            case '2':
+                valorSeguro = base * 1.05;
+                break;
+            case '3':
+                valorSeguro = base * 1.35;
+                break;
+        }
+        console.log(valorSeguro)
 
-    /**
-     * Si el seguro es básico se multiplica por 30% más
-     * Si el seguro es completo se multiplica 50%
-     */
-    if (this.tipoSeguro === "basico") {
-        valorSeguro *= 1.30;
-    } else {
-        valorSeguro *= 1.50;
+        const anioDiferencia = new Date().getFullYear() - this.anio;
+        //Cada año de diferencia reduce un 3%
+        valorSeguro -= (anioDiferencia * 3 * valorSeguro) / 100;
+
+        /**
+         * Si el seguro es básico se multiplica por 30% más
+         * Si el seguro es completo se multiplica 50%
+         */
+        if (this.tipoSeguro === "basico") {
+            valorSeguro *= 1.30;
+        } else {
+            valorSeguro *= 1.50;
+        }
+        console.log(valorSeguro)
+        return valorSeguro;
     }
-    console.log(valorSeguro)
-    return valorSeguro;
-
 }
 
 //Se obtienen los datos del formulario
@@ -81,51 +83,52 @@ formulario.addEventListener("submit", function (e) {
 
 });
 
-function Interfaz() { }
-
-Interfaz.prototype.mostrarMensajes = function (mensaje, tipo) {
-    const div = document.createElement('div');
-    if (tipo === 'error') {
-        div.classList.add('mensaje', 'error');
-    } else {
-        div.classList.add('mensaje', 'correcto');
-    }
-    div.innerHTML = `${mensaje}`;
-    formulario.insertBefore(div, document.querySelector('#cargando'));
-    setTimeout(() => {
-        document.querySelector('.mensaje').remove();
-    }, 4000);
-}
-
-Interfaz.prototype.mostrarResultado = function (seguro, total) {
-    let marca;
-    switch (seguro.marca) {
-        case '1':
-            marca = "Americano";
-            break;
-        case '2':
-            marca = "Asiático";
-            break;
-        case '3':
-            marca = "Europeo";
-            break;
+class Interfaz {
+    mostrarMensajes(mensaje, tipo) {
+        const div = document.createElement('div');
+        if (tipo === 'error') {
+            div.classList.add('mensaje', 'error');
+        } else {
+            div.classList.add('mensaje', 'correcto');
+        }
+        div.innerHTML = `${mensaje}`;
+        formulario.insertBefore(div, document.querySelector('#cargando'));
+        setTimeout(() => {
+            document.querySelector('.mensaje').remove();
+        }, 4000);
     }
 
-    const div = document.createElement('div');
-    div.innerHTML = `
-        <p class='header'>RESUMEN</p>
-        <p>Marca: ${marca}</p>
-        <p>Año: ${seguro.anio}</p>
-        <p>Tipo: ${seguro.tipoSeguro}</p>
-        <p>Total: $ ${total}</p>
-    `;
+    mostrarResultado(seguro, total) {
+        let marca;
+        switch (seguro.marca) {
+            case '1':
+                marca = "Americano";
+                break;
+            case '2':
+                marca = "Asiático";
+                break;
+            case '3':
+                marca = "Europeo";
+                break;
+        }
 
-    const spinner = document.querySelector('#cargando img');
-    spinner.style.display = 'block';
-    document.querySelector('button').style.display = 'none';//Ocultar botón cotizar mientras se "procesan" los datos
-    setTimeout(() => {
-        spinner.style.display = 'none';
-        document.getElementById('resultado').appendChild(div);//Muestra resumen en el DOM
-        document.querySelector('button').style.display = 'block';
-    }, 4000);
+        const div = document.createElement('div');
+        div.innerHTML = `
+            <p class='header'>RESUMEN</p>
+            <p>Marca: ${marca}</p>
+            <p>Año: ${seguro.anio}</p>
+            <p>Tipo: ${seguro.tipoSeguro}</p>
+            <p>Total: $ ${total}</p>
+        `;
+
+        const spinner = document.querySelector('#cargando img');
+        spinner.style.display = 'block';
+        document.querySelector('button').style.display = 'none';//Ocultar botón cotizar mientras se "procesan" los datos
+        setTimeout(() => {
+            spinner.style.display = 'none';
+            document.getElementById('resultado').appendChild(div);//Muestra resumen en el DOM
+            document.querySelector('button').style.display = 'block';
+        }, 4000);
+    }
 }
+
